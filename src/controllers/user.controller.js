@@ -4,6 +4,7 @@ import { User } from "../models/user.model.js";
 import {uploadOnCloudinary} from "../utils/cloudinary.js";
 import {ApiResponse} from "../utils/ApiResponse.js";
 import jwt from "jsonwebtoken"
+import fs from "fs"
 import mongoose from "mongoose"
 
 
@@ -24,7 +25,7 @@ const registerUser = asyncHandler(async (req, res) => {
     const {fullName, email, username, password} = req.body
 
     if(
-        [fullName, email,username,password].some((field) => field?.trim() === "")
+        [fullName, email, username, password].some((field) => field?.trim() === "")
     ){
         throw new ApiError(400, "All fields are required")
     }
@@ -78,7 +79,6 @@ const registerUser = asyncHandler(async (req, res) => {
 
 const loginUser = asyncHandler(async(req, res) => {
     const {email, username, password} = req.body
-    console.log(email)
 
     if(!username && !email){
         throw new ApiError(400, "Username or Email is required")
@@ -218,19 +218,21 @@ const changeCurrentPassword = asyncHandler(async(req, res) => {
     )
 })
 
-const getCurrentUSer = asyncHandler(async(req, res) => {
+const getCurrentUser = asyncHandler(async(req, res) => {
     return res
     .status(200)
     .json(
-        new ApiError(200, req.user, "Current User fetched successfully!!")
+        new ApiResponse(
+            200, req.user, "Current User fetched successfully!!"
+        )
     )
 })
 
 const updateAccountDetails = asyncHandler(async(req, res) => {
     const {fullName, email} = req.body
 
-    if(!fullName || !email){
-        throw new ApiError(400, "Both fullname and email are required")
+    if(!fullName && !email){
+        throw new ApiError(400, "Fullname or Email is required for updating!!")
     }
 
     const user = User.findByIdAndUpdate(
@@ -248,7 +250,7 @@ const updateAccountDetails = asyncHandler(async(req, res) => {
     .status(200)
     .json(
         new ApiResponse(
-            200, req.user, "Account details updated successfully!!"
+            200, user, "Account details updated successfully!!"
         )
     )
 })
@@ -275,6 +277,7 @@ const updateUserAvatar = asyncHandler(async(req, res) =>{
         },
         {new: true}
     ).select("-password")
+    fs.unlinkSync(avatarLocalPath)
 
     return res
     .status(200)
