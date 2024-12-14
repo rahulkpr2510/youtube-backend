@@ -10,7 +10,7 @@ const videoSchema = new Schema({
         type: String,
         required: [true, "Thumbnail is required"]
     },
-    onwer: {
+    owner: {
         type: Schema.Types.ObjectId,
         ref: 'User',
     },
