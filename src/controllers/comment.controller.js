@@ -136,8 +136,6 @@ const updateComment = asyncHandler(async (req, res) => {
 
     const originalComment = await Comment.findById(commentId)
 
-    console.log(originalComment)
-
     if(!originalComment){
         throw new ApiError(404, "No comment found with this commentID")
     }
