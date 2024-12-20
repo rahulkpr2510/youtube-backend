@@ -248,7 +248,7 @@ const deleteVideo = asyncHandler(async (req, res) => {
         throw new ApiError(500, "Error while deleting videoFile from cloudinary")
     }
 
-    const deleteVideo = await Video.findOneAndDelete(videoId)
+    const deleteVideo = await Video.findByIdAndDelete(videoId)
 
     if(!deleteVideo){
         throw new ApiError(500, "Something went wrong while deleting the video!!")
