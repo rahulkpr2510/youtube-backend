@@ -72,10 +72,8 @@ const getAllVideos = asyncHandler(async (req, res) => {
 const publishAVideo = asyncHandler(async (req, res) => {
     const { title, description} = req.body
     // TODO: get video, upload to cloudinary, create video
-    if(
-        [title, description].some((field) => field?.trim() === "")
-    ){
-        throw new ApiError(400, "Both title and description is required!!")
+    if(!title || !description){
+        throw new ApiError(400, "Title and Description is required!!")
     }
 
     const thumbnailLocalPath = req.files?.thumbnail[0]?.path
